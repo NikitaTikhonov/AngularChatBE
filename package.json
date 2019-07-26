@@ -1,0 +1,25 @@
+{
+  "name": "chatapp-be",
+  "version": "1.0.0",
+  "description": "Backend for chat app",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "chat",
+    "node.js",
+    "angular"
+  ],
+  "author": "Nikita Tikhonov",
+  "license": "ISC",
+  "dependencies": {
+    "cookie-parser": "^1.4.4",
+    "express": "^4.17.1",
+    "mongoose": "^5.6.6"
+  },
+  "devDependencies": {
+    "morgan": "^1.9.1",
+    "nodemon": "^1.19.1"
+  }
+}
