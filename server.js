@@ -9,7 +9,7 @@ const app = express();
 
 mongoose.connect(require('./config/secret').url, {
   useNewUrlParser: true
-});
+}).then(()=>console.log('DB connected')).catch(err=>console.log(err));
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));

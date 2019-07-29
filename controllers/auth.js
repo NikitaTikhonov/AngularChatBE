@@ -1,9 +1,11 @@
 const Joi = require('@hapi/joi');
 const HttpStatus = require('http-status-codes');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const User = require('../models/userModel');
 const Helpers = require('../helpers/helpers');
+const { secret } = require('../config/secret');
 
 module.exports = {
   async createUser(req, res) {
@@ -63,9 +65,13 @@ module.exports = {
 
     try {
       const user = await User.create(body);
+      const token = jwt.sign(user.toJSON(), secret, {
+        expiresIn: 120
+      });
+      res.cookie('auth', token);
       res
         .status(HttpStatus.CREATED)
-        .json({ message: 'User created successfully', user });
+        .json({ message: 'User created successfully', user, token });
     } catch (err) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
