@@ -18,8 +18,14 @@ module.exports = {
         .email()
         .required(),
       password: Joi.string()
-        .regex(/^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{6,10}$/)
+        .regex(/^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{6,}$/)
         .required()
+        .error(errors => {
+          return {
+            message:
+              'Password must contain at least one letter, at least one number,and be longer than 6 characters'
+          };
+        })
     });
 
     const { error, value } = Joi.validate(req.body, schema);
