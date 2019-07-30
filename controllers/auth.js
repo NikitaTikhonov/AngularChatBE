@@ -69,13 +69,14 @@ module.exports = {
 
     try {
       const user = await User.create(body);
-      const token = jwt.sign(user.toJSON(), secret, {
+      const userData = (({ username, _id }) => ({ username, _id }))(user);
+      const token = jwt.sign(userData, secret, {
         expiresIn: '1h'
       });
       res.cookie('auth', token);
       res
         .status(HttpStatus.CREATED)
-        .json({ message: 'User created successfully', user, token });
+        .json({ message: 'User created successfully', user: userData, token });
     } catch (err) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -97,7 +98,7 @@ module.exports = {
     try {
       const user = await User.findOne({
         username: Helpers.firstUpper(value.username)
-      });
+      }).select('-__v');
       if (!user) {
         return res
           .status(HttpStatus.NOT_FOUND)
@@ -109,13 +110,14 @@ module.exports = {
           return res
             .status(HttpStatus.NOT_FOUND)
             .json({ message: 'Invalid credentials' });
-        const token = jwt.sign(user.toJSON(), secret, {
+        const userData = (({ username, _id }) => ({ username, _id }))(user);
+        const token = jwt.sign(userData, secret, {
           expiresIn: '1h'
         });
         res.cookie('auth', token);
         return res
           .status(HttpStatus.OK)
-          .json({ message: 'Login successful', user, token });
+          .json({ message: 'Login successful', user: userData, token });
       });
     } catch (error) {
       return res
