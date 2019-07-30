@@ -107,7 +107,7 @@ module.exports = {
       bcrypt.compare(value.password, user.password).then(result => {
         if (!result)
           return res
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .status(HttpStatus.NOT_FOUND)
             .json({ message: 'Invalid credentials' });
         const token = jwt.sign(user.toJSON(), secret, {
           expiresIn: 120
