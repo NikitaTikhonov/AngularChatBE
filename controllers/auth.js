@@ -70,7 +70,7 @@ module.exports = {
     try {
       const user = await User.create(body);
       const token = jwt.sign(user.toJSON(), secret, {
-        expiresIn: 120
+        expiresIn: '1h'
       });
       res.cookie('auth', token);
       res
@@ -110,7 +110,7 @@ module.exports = {
             .status(HttpStatus.NOT_FOUND)
             .json({ message: 'Invalid credentials' });
         const token = jwt.sign(user.toJSON(), secret, {
-          expiresIn: 120
+          expiresIn: '1h'
         });
         res.cookie('auth', token);
         return res
