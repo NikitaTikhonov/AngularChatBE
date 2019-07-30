@@ -81,5 +81,46 @@ module.exports = {
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: 'Error occurred' });
     }
+  },
+
+  async loginUser(req, res) {
+    const schema = Joi.object().keys({
+      username: Joi.string().required(),
+      password: Joi.string().required()
+    });
+
+    const { error, value } = Joi.validate(req.body, schema);
+    if (error && error.details) {
+      return res.status(HttpStatus.BAD_REQUEST).json({ msg: error.details });
+    }
+
+    try {
+      const user = await User.findOne({
+        username: Helpers.firstUpper(value.username)
+      });
+      if (!user) {
+        return res
+          .status(HttpStatus.NOT_FOUND)
+          .json({ message: 'Invalid credentials' });
+      }
+
+      bcrypt.compare(value.password, user.password).then(result => {
+        if (!result)
+          return res
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .json({ message: 'Invalid credentials' });
+        const token = jwt.sign(user.toJSON(), secret, {
+          expiresIn: 120
+        });
+        res.cookie('auth', token);
+        return res
+          .status(HttpStatus.OK)
+          .json({ message: 'Login successful', user, token });
+      });
+    } catch (error) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: 'Error occurred' });
+    }
   }
 };
