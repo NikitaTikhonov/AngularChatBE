@@ -13,10 +13,9 @@ module.exports = {
         .status(httpStatus.FORBIDDEN)
         .json({ message: 'No token provided' });
     }
-
     try {
       const decoded = await jwt.verify(token, secret);
-      req.user = decoded.data.user;
+      req.user = decoded.user;
       next();
     } catch (err) {
       if (err.expiredAt < new Date()) {
