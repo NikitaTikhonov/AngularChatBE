@@ -5,6 +5,7 @@ const logger = require('morgan');
 const cors = require('cors');
 
 const auth = require('./routes/authRoutes');
+const post = require('./routes/postRoutes');
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use(cookieParser());
 app.use(logger('dev'));
 
 app.use('/api/chatapp', auth);
+app.use('/api/chatapp', post);
 
 app.listen(3000, () => {
   console.log('Server running on port 3000');
